@@ -38,8 +38,8 @@ public class Recommandid {
         System.out.println("case1 = " + convertUtil.createId(originId1));
         System.out.println("case2 = " + convertUtil.createId(originId2));
         System.out.println("case3 = " + convertUtil.createId(originId3));
-//        System.out.println("case4 = " + convertUtil.createId(originId4));
-//        System.out.println("case5 = " + convertUtil.createId(originId5));
+        System.out.println("case4 = " + convertUtil.createId(originId4));
+        System.out.println("case5 = " + convertUtil.createId(originId5));
 
     }
 
@@ -49,14 +49,11 @@ public class Recommandid {
             String step2 = removeSpecificChar(step1);
             String step3 = replaceDoubleDotToOneDot(step2);
             String step4 = removeStartDotOrEndDot(step3);
-            String step5 = checkLength(step4);
-            return repeatAppendStr(step5);
+            String step5 = checkParam(step4);
+            String step6 = checkLength(step5);
+            return repeatAppendStr(step6);
         }
 
-        public String checkParam(String originId) {
-            if (originId == null || originId.isEmpty()) return "a";
-            return originId;
-        }
         // 1단계 new_id의 모든 대문자를 대응되는 소문자로 치환합니다.
         public String convertSmall(String originId) {
             return originId.toLowerCase();
@@ -83,6 +80,12 @@ public class Recommandid {
             return result;
         }
 
+        // 5단계 new_id가 빈 문자열이라면, new_id에 "a"를 대입합니다.
+        public String checkParam(String originId) {
+            if (originId == null || originId.isEmpty()) return "a";
+            return originId;
+        }
+
         // 6단계 new_id의 길이가 16자 이상이면, new_id의 첫 15개의 문자를 제외한 나머지 문자들을 모두 제거합니다.
         public String checkLength(String originId) {
             if (originId == null || originId.isEmpty()) return "a";
@@ -97,13 +100,12 @@ public class Recommandid {
             StringBuilder sb = new StringBuilder();
             // ab
             if (originId.length() < 3) {
-                while (originId.length() > 3) {
+                while (sb.toString().length() < 2) {
                     String str = originId.substring(originId.length()-1);
                     sb.append(str);
                 }
             }
-
-            return originId + sb.toString();
+            return originId + sb;
         }
     }
 }
