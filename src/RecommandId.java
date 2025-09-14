@@ -1,4 +1,4 @@
-public class Recommandid {
+public class RecommandId {
 
     /**
      * 문제 설명
@@ -29,17 +29,9 @@ public class Recommandid {
      */
 
     public static void main(String[] args) {
-        String originId1 = "...!@BaT#*..y.abcdefghijklm";
-        String originId2 = "z-+.^.";
-        String originId3 = "=.=";
-        String originId4 = "123_.def";
-        String originId5 = "abcdefghijklmn.p";
+        String originId = "z-+.^.";
         ConvertUtil convertUtil = new ConvertUtil();
-        System.out.println("case1 = " + convertUtil.createId(originId1));
-        System.out.println("case2 = " + convertUtil.createId(originId2));
-        System.out.println("case3 = " + convertUtil.createId(originId3));
-        System.out.println("case4 = " + convertUtil.createId(originId4));
-        System.out.println("case5 = " + convertUtil.createId(originId5));
+        System.out.println("Id = " + convertUtil.createId(originId));
 
     }
 
@@ -54,26 +46,26 @@ public class Recommandid {
             return repeatAppendStr(step6);
         }
 
-        // 1단계 new_id의 모든 대문자를 대응되는 소문자로 치환합니다.
+        // 1단계 대문자는 모두 소문자로 치
         public String convertSmall(String originId) {
             return originId.toLowerCase();
         }
-        // 2단계 new_id에서 알파벳 소문자, 숫자, 빼기(-), 밑줄(_), 마침표(.)를 제외한 모든 문자를 제거합니다.
+        // 2단계 알파벳 소문자, 숫자, 빼기(-), 밑줄(_), 마침표(.)를 제외한 모든 문자를 제거합니다.
         public String removeSpecificChar(String originId) {
-            return originId.replaceAll("[^a-z0-9-_.]", "");
+            return originId.replaceAll("[^a-z0-9._-]", "");
         }
-        // 3단계 new_id에서 마침표(.)가 2번 이상 연속된 부분을 하나의 마침표(.)로 치환합니다.
+        // 3단계 연속 마침표(.)는 하나의 마침표로 치환(.)
         public String replaceDoubleDotToOneDot(String originId) {
             return originId.replaceAll("\\.{2,}", ".");
         }
-        // 4단계 new_id에서 마침표(.)가 처음이나 끝에 위치한다면 제거합니다.
+        // 4단계 마침표(.)가 처음이나 끝에 위치한다면 제거합니다.
         public String removeStartDotOrEndDot(String originId) {
-            if (originId == null || originId.isEmpty()) return "a";
             String result = originId;
+            // 마침표로 시작할 경우 앞쪽 마침표 제거
             if (originId.startsWith(".")) {
-                // 첫번째 인덱스제외 하고 sb.append
                 result = originId.substring(1);
             }
+            // 마지막에 마침표로 끝날 경우 마지막 마침표 제거
             if (result.endsWith(".")) {
                 result = result.substring(0, result.length()-1);
             }
@@ -86,26 +78,33 @@ public class Recommandid {
             return originId;
         }
 
-        // 6단계 new_id의 길이가 16자 이상이면, new_id의 첫 15개의 문자를 제외한 나머지 문자들을 모두 제거합니다.
+        // 6단계 new_id의 길이가 16자 이상이면, new_id의 15자만 남김.
+        // 만약, 끝자리가 . 으로 끝난다면 . 은 제거
         public String checkLength(String originId) {
+            String replaceId = null;
             if (originId == null || originId.isEmpty()) return "a";
-            if (originId.length() > 17) {
-                return originId.substring(0, 15);
+            if (originId.length() >= 16) {
+                // 15자리만 남김
+                replaceId = originId.substring(0, 15);
+                // 15자리에서 마지막이 마침표로 끝나면 마침표 제거
+                if (replaceId.endsWith(".")) {
+                    return replaceId.substring(0, replaceId.length() - 1);
+                }
+                return replaceId;
             }
             return originId;
         }
 
         // 7단계 new_id의 길이가 2자 이하라면, new_id의 마지막 문자를 new_id의 길이가 3이 될 때까지 반복해서 끝에 붙입니다.
         public String repeatAppendStr(String originId) {
-            StringBuilder sb = new StringBuilder();
-            // ab
-            if (originId.length() < 3) {
-                while (sb.toString().length() < 2) {
-                    String str = originId.substring(originId.length()-1);
-                    sb.append(str);
-                }
+            if (originId.length() >= 3) return originId;
+            StringBuilder sb = new StringBuilder(originId);
+            char last = originId.charAt(originId.length()-1);
+            while (sb.length() < 3) {
+                sb.append(last);
             }
-            return originId + sb;
+            return sb.toString();
         }
     }
 }
+
